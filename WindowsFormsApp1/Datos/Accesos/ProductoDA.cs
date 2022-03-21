@@ -45,7 +45,7 @@ namespace Datos.Accesos
             bool Insertado = false;
             try
             {
-                string sql = "INSERT INTO Producto VALUES (@Codigo, @Descripcion, @Precio, @Existencia)";
+                string sql = "INSERT INTO Producto VALUES (@Codigo, @Descripcion, @Precio, @Existencia, @Imagen)";
                 conexion = new MySqlConnection(Cadena);
                 conexion.Open();
                 comando = new MySqlCommand(sql, conexion);
@@ -54,7 +54,8 @@ namespace Datos.Accesos
                 comando.Parameters.AddWithValue("@Descripcion", producto.Descripcion);
                 comando.Parameters.AddWithValue("@Precio", producto.Precio);
                 comando.Parameters.AddWithValue("@Existencia", producto.Existencia);
-              
+                comando.Parameters.AddWithValue("@Imagen", producto.Imagen);
+
                 comando.ExecuteNonQuery(); //ejecuta, pero no devuelve nada.
 
                 Insertado = true;
@@ -74,7 +75,8 @@ namespace Datos.Accesos
             bool Modificado = false;
             try
             {
-                string sql = "UPDATE Producto SET Codigo= @Codigo, Nombre= @Nombre, Descripcion= @Descripcion, Precio= @Precio, Existencia= @Existencia WHERE Codigo= @Codigo";
+                string sql = "UPDATE Producto SET Codigo= @Codigo, Descripcion= @Descripcion," +
+                            " Precio= @Precio, Existencia= @Existencia, Imagen= @Imagen WHERE Codigo= @Codigo";
                 conexion = new MySqlConnection(Cadena);
                 conexion.Open();
                 comando = new MySqlCommand(sql, conexion);
@@ -83,6 +85,7 @@ namespace Datos.Accesos
                 comando.Parameters.AddWithValue("@Descripcion", producto.Descripcion);
                 comando.Parameters.AddWithValue("@Precio", producto.Precio);
                 comando.Parameters.AddWithValue("@Existencia", producto.Existencia);
+                comando.Parameters.AddWithValue("@Imagen", producto.Imagen);
 
                 comando.ExecuteNonQuery();
 
@@ -98,7 +101,7 @@ namespace Datos.Accesos
             return Modificado;
         }
 
-        public bool EliminarUsuario(string Codigo)
+        public bool EliminarProducto(string Codigo)
         {
             bool Eliminado = false;
 
@@ -123,6 +126,35 @@ namespace Datos.Accesos
             }
 
             return Eliminado;
+        }
+
+        public byte[] SeleccionarImagen(string Codigo)
+        {
+            byte[] _Imagen = new byte[0];
+            try
+            {
+                string sql = "SELECT Imagen from Producto WHERE Codigo= @Codigo;)";
+                conexion = new MySqlConnection(Cadena);
+                conexion.Open();
+                comando = new MySqlCommand(sql, conexion);
+                //se mandan como parametros todas las propiedades de un objeto producto
+                comando.Parameters.AddWithValue("@Codigo", Codigo);
+                MySqlDataReader  reader = comando.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    _Imagen = (byte[])reader["Imagen"];
+                }
+                
+                conexion.Close();
+            }
+            catch (Exception ex)
+            {
+
+
+            }
+
+            return _Imagen;
         }
 
     }

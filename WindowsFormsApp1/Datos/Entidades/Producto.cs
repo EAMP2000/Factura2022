@@ -9,21 +9,23 @@ namespace Datos.Entidades
     public class Producto
     {
         public string Codigo { get; set; }
-        public int Descripcion { get; set; }
+        public string Descripcion { get; set; }
         public decimal Precio { get; set; }
         public int Existencia { get; set; }
+        public byte [] Imagen { get; set; }
 
         public Producto()
         {
 
         }
 
-        public Producto(string codigo, int descripcion, decimal precio, int existencia)
+        public Producto(string codigo, string descripcion, decimal precio, int existencia, byte []imagen)
         {
             Codigo = codigo;
             Descripcion = descripcion;
             Precio = precio;
             Existencia = existencia;
+            Imagen = imagen;
         }
     }
 

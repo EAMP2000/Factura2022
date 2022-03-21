@@ -40,8 +40,9 @@ namespace WindowsFormsApp1
             }
             
             //se instancia el formulario de usuarios para ser llamado en la ejecucion y acceder a el.
-            FormularioUsuarios formularioUsuarios = new FormularioUsuarios();
-            formularioUsuarios.Show();
+            FrmMenu frmMenu = new FrmMenu();
+            frmMenu.Show();
+            this.Hide();
         }
 
         private void CancelarButton_Click(object sender, EventArgs e)
