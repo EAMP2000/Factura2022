@@ -30,16 +30,16 @@ namespace WindowsFormsApp1
 
         private void HabilitarControles()
         {
-            CodigoTextBox.Enabled=true;
-            DescripcionTextBox.Enabled=true;
-            PrecioTextBox.Enabled=true; 
-            ExistenciasTextBox.Enabled=true;
-            ExaminarImagenButton.Enabled=true;
+            CodigoTextBox.Enabled = true;
+            DescripcionTextBox.Enabled = true;
+            PrecioTextBox.Enabled = true;
+            ExistenciasTextBox.Enabled = true;
+            ExaminarImagenButton.Enabled = true;
 
-            GuardarButton.Enabled=true;
-            CancelarButton.Enabled=true;
-            NuevoButton.Enabled=false;
-            ModificarButton.Enabled=false;  
+            GuardarButton.Enabled = true;
+            CancelarButton.Enabled = true;
+            NuevoButton.Enabled = false;
+            ModificarButton.Enabled = false;
         }
 
         private void DeshabilitarControles()
@@ -62,9 +62,9 @@ namespace WindowsFormsApp1
             DescripcionTextBox.Clear();
             PrecioTextBox.Clear();
             ExistenciasTextBox.Clear();
-            ImagenPictureBox.Image=null;
+            ImagenPictureBox.Image = null;
 
-            
+
         }
 
         private void GuardarButton_Click(object sender, EventArgs e)
@@ -105,10 +105,14 @@ namespace WindowsFormsApp1
                 producto.Precio = Convert.ToDecimal(PrecioTextBox.Text);
                 producto.Existencia = Convert.ToInt32(ExistenciasTextBox.Text);
 
-                System.IO.MemoryStream ms = new System.IO.MemoryStream();  
-                ImagenPictureBox.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
 
-                producto.Imagen = ms.GetBuffer();
+                if(ImagenPictureBox.Image != null) //vallida que no salte error al no insertar la  imagen de un producto.
+                {
+                    System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                    ImagenPictureBox.Image.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                    producto.Imagen = ms.GetBuffer();
+                }
+
 
                 if (Operacion == "Nuevo")
                 {
@@ -123,9 +127,9 @@ namespace WindowsFormsApp1
 
                     }
                 }
-                else if(Operacion =="Modificar")
+                else if (Operacion == "Modificar")
                 {
-                   bool Modificar= productoDA.ModificarProducto(producto);
+                    bool Modificar = productoDA.ModificarProducto(producto);
                     if (Modificar)
                     {
                         LimpiarControles();
@@ -139,7 +143,7 @@ namespace WindowsFormsApp1
             catch (Exception ex)
             {
 
-                
+
             }
         }
         //abrir imagen para seleccionar
@@ -148,15 +152,15 @@ namespace WindowsFormsApp1
             OpenFileDialog dialog = new OpenFileDialog(); //abre cuadro de dialogo para pasar la imagen
             DialogResult Result = dialog.ShowDialog();
 
-            if(Result == DialogResult.OK)
+            if (Result == DialogResult.OK)
             {
-                ImagenPictureBox.Image = Image.FromFile(dialog.FileName);  
+                ImagenPictureBox.Image = Image.FromFile(dialog.FileName);
             }
         }
 
         private void FormularioProducto_Load(object sender, EventArgs e)
         {
-            ListarProductos();    
+            ListarProductos();
         }
 
         private void ListarProductos()
@@ -170,13 +174,13 @@ namespace WindowsFormsApp1
         {
             if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar) && (e.KeyChar != '.'))
             {
-                e.Handled = true;   
+                e.Handled = true;
             }
 
             //valida que no se ingrese mas de un punto.
-            if((e.KeyChar == '.') && (sender as TextBox).Text.IndexOf('.') >-1)
+            if ((e.KeyChar == '.') && (sender as TextBox).Text.IndexOf('.') > -1)
             {
-                e.Handled=true;
+                e.Handled = true;
             }
         }
 
@@ -217,6 +221,29 @@ namespace WindowsFormsApp1
             else
             {
                 MessageBox.Show("Seleccione el producto");
+            }
+        }
+
+        private void EliminarButton_Click(object sender, EventArgs e)
+        {
+            if (ProductosDataGridView.SelectedRows.Count > 0)
+            {
+                bool Eliminado = productoDA.EliminarProducto(ProductosDataGridView.CurrentRow.Cells["Codigo"].Value.ToString());
+
+                if (Eliminado) //se entiende como TRUE
+                {
+                    MessageBox.Show("Producto  eliminado Exitosamente", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ListarProductos();
+                }
+                else
+                {
+                    MessageBox.Show("Producto  eliminado Exitosamente", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("Debe seleccionar un producto.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

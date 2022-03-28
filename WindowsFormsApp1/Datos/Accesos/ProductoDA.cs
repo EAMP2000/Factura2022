@@ -157,5 +157,39 @@ namespace Datos.Accesos
             return _Imagen;
         }
 
+        public Producto ObtenerProductoPorCodigo(string codigo)
+        {
+            Producto producto = new Producto();
+
+            try
+            {
+                string sql = "SELECT * from Producto WHERE Codigo= @Codigo;)";
+                conexion = new MySqlConnection(Cadena);
+                conexion.Open();
+                comando = new MySqlCommand(sql, conexion);
+                //se mandan como parametros todas las propiedades de un objeto producto
+                comando.Parameters.AddWithValue("@Codigo", codigo);
+                MySqlDataReader reader = comando.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    producto.Codigo = reader["Codigo"].ToString();
+                    producto.Descripcion = reader["Descripcion"].ToString();
+                    producto.Precio = Convert.ToDecimal(reader["Precio"]);
+                    producto.Existencia = Convert.ToInt32(reader["Existencia"]);
+                    producto.Imagen = (byte[])reader["Imagen"];
+                }
+
+               
+                conexion.Close();
+                
+            }
+            catch (Exception)
+            {
+
+            }
+            return producto;
+        }
+
     }
 }
